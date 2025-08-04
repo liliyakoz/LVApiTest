@@ -34,9 +34,13 @@ class TestPet:
     @allure.title("Добавление нового питомца")
     def test_add_pet(self):
         with allure.step("Подготовка данных для создания питомца"):
-            payload = {"id": 1,
-                       "name": "Bob",
-                       "status": "available"}
+
+             payload = {"id": 10,
+                   "name": "doggie",
+                   "category": {"id": 1, "name": "Dogs"},
+                   "photoUrls": ["string"],
+                   "tags": [{"id": 0, "name": "string"}],
+                   "status": "available"}
 
         with allure.step("Отправка запроса на создание питомца"):
             response = requests.post(url=f"{BASE_URL}/pet", json=payload)
@@ -49,6 +53,13 @@ class TestPet:
             assert response_json['id'] == payload ['id'], "id питомца не совпадает с ожидаемым"
             assert response_json ['name'] == payload['name'], "имя  питомца не совпадает с ожидаемым"
             assert response_json ['status'] == payload['status'], "статус питомца не совпадает с ожидаемым"
+            assert response_json['category'] == payload['category'], "категория питомца не совпадает с ожидаемым"
+            assert response_json['photoUrls'] == payload['photoUrls'], "ссылка на питомца не совпадает с ожидаемым"
+            assert response_json['tags'] == payload['tags'], "теги на питомца не совпадает с ожидаемым"
+
+
+
+
 
 
 
