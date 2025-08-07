@@ -57,6 +57,24 @@ class TestPet:
             assert response_json['photoUrls'] == payload['photoUrls'], "ссылка на питомца не совпадает с ожидаемым"
             assert response_json['tags'] == payload['tags'], "теги на питомца не совпадает с ожидаемым"
 
+    @allure.title("Получение информации о питомце по ID")
+    def test_get_pet_by_id (self, create_pet):
+        with allure.step("Получение ID созданного питомца"):
+            pet_id = create_pet ['id']
+
+        with allure.step("Отправка запроса на получение информации о питомце по ID"):
+            response = requests.get(url=f"{BASE_URL}/pet/{pet_id}")
+
+        with allure.step("Проверка статуса ответа и данных питомца"):
+            assert response.status_code == 200, "Код ответа не совпал с ожидаемым"
+            assert response.json()['id'] == pet_id
+
+
+
+
+
+
+
 
 
 
