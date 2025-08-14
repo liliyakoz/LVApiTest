@@ -1,3 +1,5 @@
+from http.client import responses
+import pytest
 import allure
 import requests
 import jsonschema
@@ -108,6 +110,32 @@ class TestPet:
 
         get_response = requests.get(f"{BASE_URL}/pet/{pet_id}")
         assert get_response.status_code == 404, "Питомец всё еще существует после удаления"
+
+    @allure.title("Получение списка питомцев по статусу")
+    @pytest.mark.parametrize ("status, expected_status_code",
+                              [("available", 200),
+                               ("pending", 200),
+                               (" ", 400),
+                               ("sold", 200),
+                               ("fvsr", 400)
+                               ]
+                              )
+    def test_get_pets_by_status(self,status, expected_status_code):
+        with allure.step(f"Отправка запроса на получение питомцев по статусу {status}"):
+            response = requests.get(f"{BASE_URL}/pet/findByStatus", params={'status': status})
+
+        with allure.step("Проверка статуса ответа и формата данных"):
+            assert response.status_code == expected_status_code
+
+            if expected_status_code == 200:
+                with allure.step("Проверка формата данных"):
+                    assert isinstance(response.json(), list)
+            else:
+                with allure.step("Проверка сообщения об ошибке"):
+                    assert isinstance(response.json(), dict)
+                    assert 'code' in response.json()
+                    assert 'message' in response.json()
+
 
 
 
